@@ -12,7 +12,7 @@ class DetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Image Utama & Tombol Back
+            // Image Utama & Tombol Backgit
             Stack(
               children: [
                 Padding(
