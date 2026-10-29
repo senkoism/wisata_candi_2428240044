@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi_dart/providers/auth_provider.dart';
+import 'package:wisata_candi_dart/screens/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -9,31 +12,40 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // TODO: 1. Deklarasikan variabel
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final String _errorText = '';
-  final bool _isSignedIn = false;
   bool _obscurePassword = true;
+
+  void _signIn() {
+    final name = _usernameController.text.trim();
+    if (name.isEmpty) return;
+    context.read<AuthProvider>().signIn(name);
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // TODO: 2. Pasang AppBar
       appBar: AppBar(title: const Text('Sign In')),
-      // TODO: 3. Pasang body
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Form(
               child: Column(
-                // TODO: 4. Atur alignment
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // TODO: 5. TextFormField nama pengguna
+                  // TextFormField nama pengguna
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
@@ -41,8 +53,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  // TODO: 6. TextFormField kata sandi
                   const SizedBox(height: 20),
+                  // TextFormField kata sandi
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -62,14 +74,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     obscureText: _obscurePassword,
                   ),
-                  // TODO: 7. ElevatedButton Sign In
                   const SizedBox(height: 20),
+                  // ElevatedButton Sign In
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _signIn,
                     child: const Text('Sign In'),
                   ),
-                  // TODO: 8. TextButton / RichText Sign Up
                   const SizedBox(height: 10),
+                  // RichText Sign Up
                   RichText(
                     text: TextSpan(
                       text: 'Belum punya akun? ',
@@ -84,7 +96,15 @@ class _SignInScreenState extends State<SignInScreen> {
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const SignUpScreen(),
+                                ),
+                              );
+                            },
                         ),
                       ],
                     ),

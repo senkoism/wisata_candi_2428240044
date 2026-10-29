@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi_dart/providers/auth_provider.dart';
+import 'package:wisata_candi_dart/providers/favorite_provider.dart';
+import 'package:wisata_candi_dart/screens/sign_in_screen.dart';
 import 'package:wisata_candi_dart/widgets/profile_info_item.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -9,34 +13,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // TODO: 1. Deklarasikan variabel yang dibutuhkan
-  bool isSignedIn = false;
-  String fullName = '';
-  String userName = '';
-  int favoriteCandiCount = 0;
-
-  // TODO: 5. Implementasi fungsi signIn
-  void signIn() {
-    setState(() {
-      isSignedIn = true;
-      userName = 'Ariel';
-      fullName = 'Ariel Shostakovich';
-      favoriteCandiCount = 3;
-    });
-  }
-
-  // TODO: 6. Implementasi fungsi signOut
-  void signOut() {
-    setState(() {
-      isSignedIn = false;
-      userName = '';
-      fullName = '';
-      favoriteCandiCount = 0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final favoriteCount = context.watch<FavoriteProvider>().count;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -49,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                // TODO: 2. Buat ProfileHeader (foto profil)
+                // ProfileHeader (foto profil)
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -72,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ),
-                        if (isSignedIn)
+                        if (auth.isSignedIn)
                           IconButton(
                             onPressed: () {},
                             icon: Icon(
@@ -84,14 +65,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                // TODO: 3. Buat ProfileInfo (info pengguna)
+                // ProfileInfo (info pengguna)
                 const SizedBox(height: 20),
                 Divider(color: Colors.deepPurple[100]),
                 const SizedBox(height: 4),
                 ProfileInfoItem(
                   icon: Icons.lock,
                   label: 'Pengguna',
-                  value: userName,
+                  value: auth.isSignedIn ? auth.username : '',
                   iconColor: Colors.amber,
                 ),
                 const SizedBox(height: 4),
@@ -100,8 +81,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileInfoItem(
                   icon: Icons.person,
                   label: 'Nama',
-                  value: fullName,
-                  showEditIcon: isSignedIn,
+                  value: auth.isSignedIn ? auth.username : '',
+                  showEditIcon: auth.isSignedIn,
                   onEditPressed: () => debugPrint('Icon edit ditekan'),
                   iconColor: Colors.blue,
                 ),
@@ -111,20 +92,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileInfoItem(
                   icon: Icons.favorite,
                   label: 'Favorit',
-                  value: favoriteCandiCount > 0 ? '$favoriteCandiCount' : '',
+                  value: favoriteCount > 0 ? '$favoriteCount' : '',
                   iconColor: Colors.red,
                 ),
-                // TODO: 4. Buat ProfileActions (tombol sign in/out)
+                // ProfileActions (tombol sign in/out)
                 const SizedBox(height: 4),
                 Divider(color: Colors.deepPurple[100]),
                 const SizedBox(height: 20),
-                isSignedIn
+                auth.isSignedIn
                     ? TextButton(
-                        onPressed: signOut,
+                        onPressed: () {
+                          context.read<AuthProvider>().signOut();
+                          context.read<FavoriteProvider>().clearAll();
+                        },
                         child: const Text('Sign Out'),
                       )
                     : TextButton(
-                        onPressed: signIn,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SignInScreen(),
+                            ),
+                          );
+                        },
                         child: const Text('Sign In'),
                       ),
               ],

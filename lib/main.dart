@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:wisata_candi_dart/screens/sign_in_screen.dart';
-// import 'package:wisata_candi_dart/screens/sign_up_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi_dart/data/candi_data.dart';
+import 'package:wisata_candi_dart/providers/auth_provider.dart';
+import 'package:wisata_candi_dart/providers/favorite_provider.dart';
+import 'package:wisata_candi_dart/screens/detail_screen.dart';
 // import 'package:wisata_candi_dart/screens/profile_screen.dart';
-// import 'package:wisata_candi_dart/data/candi_data.dart';
-// import 'package:wisata_candi_dart/screens/detail_screen.dart';
+// import 'package:wisata_candi_dart/screens/sign_in_screen.dart';
+// import 'package:wisata_candi_dart/screens/sign_up_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,10 +40,11 @@ class MyApp extends StatelessWidget {
             .copyWith(primary: Colors.deepPurple, surface: Colors.deepPurple[50]),
         useMaterial3: true,
       ),
-      home: const SignInScreen(),
-      // home: const SignUpScreen(),
+      // Untuk menguji perpindahan dan sinkronisasi data antar layar sesuai modul:
+      home: DetailScreen(candi: candiList[0]),
       // home: const ProfileScreen(),
-      // home: DetailScreen(candi: candiList[0]),
+      // home: const SignInScreen(),
+      // home: const SignUpScreen(),
     );
   }
 }
