@@ -7,6 +7,7 @@ import 'package:wisata_candi_dart/screens/detail_screen.dart';
 // import 'package:wisata_candi_dart/screens/profile_screen.dart';
 // import 'package:wisata_candi_dart/screens/sign_in_screen.dart';
 // import 'package:wisata_candi_dart/screens/sign_up_screen.dart';
+import 'package:wisata_candi_dart/screens/search_screen.dart';
 
 void main() {
   runApp(
@@ -41,10 +42,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Untuk menguji perpindahan dan sinkronisasi data antar layar sesuai modul:
-      home: DetailScreen(candi: candiList[0]),
+      // home: DetailScreen(candi: candiList[0]),
       // home: const ProfileScreen(),
       // home: const SignInScreen(),
       // home: const SignUpScreen(),
+      home: const SearchScreen(),
     );
   }
 }
